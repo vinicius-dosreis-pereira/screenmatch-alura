@@ -1,9 +1,12 @@
 package com.example.screenmatch_alura.principal;
 
 import com.example.screenmatch_alura.model.DadosSerie;
+import com.example.screenmatch_alura.model.DadosTemporada;
 import com.example.screenmatch_alura.service.ConsumoApi;
 import com.example.screenmatch_alura.service.ConverteDados;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Principal {
@@ -17,12 +20,23 @@ public class Principal {
 
     public void exibeMenu(){
         System.out.println("Digite o nome da série para a busca");
-        var nomeSerie = leitura.nextLine();
-        var json = consumo.obterDados(ENDERECO + nomeSerie.replace("", "+") + API_KEY);
+        String nomeSerie = leitura.nextLine();
+        String json = consumo.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + API_KEY);
 
         DadosSerie dados = conversor.obterDados(json, DadosSerie.class);
         System.out.println(dados);
 
+        List<DadosTemporada> dadosTemporadaList = new ArrayList<>();
+
+        for (int i = 1; i <= dados.totalTemporadas(); i++) {
+            json = consumo.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + "&season=" + i + API_KEY);
+            DadosTemporada dadosTemporada = conversor.obterDados(json, DadosTemporada.class);
+            dadosTemporadaList.add(dadosTemporada);
+        }
+        dadosTemporadaList.forEach(System.out::println);
+
+        dadosTemporadaList.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
+//      utilizando função Lambda para substituir um 'for'
 
     }
 
