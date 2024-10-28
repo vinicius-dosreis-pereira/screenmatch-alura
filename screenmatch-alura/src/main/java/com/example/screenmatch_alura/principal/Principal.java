@@ -3,6 +3,7 @@ package com.example.screenmatch_alura.principal;
 import com.example.screenmatch_alura.model.DadosEpisodio;
 import com.example.screenmatch_alura.model.DadosSerie;
 import com.example.screenmatch_alura.model.DadosTemporada;
+import com.example.screenmatch_alura.model.Episodio;
 import com.example.screenmatch_alura.service.ConsumoApi;
 import com.example.screenmatch_alura.service.ConverteDados;
 
@@ -29,19 +30,19 @@ public class Principal {
         DadosSerie dados = conversor.obterDados(json, DadosSerie.class);
         System.out.println(dados);
 
-        List<DadosTemporada> dadosTemporadaList = new ArrayList<>();
+        List<DadosTemporada> temporadas = new ArrayList<>();
 
         for (int i = 1; i <= dados.totalTemporadas(); i++) {
             json = consumo.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + "&season=" + i + API_KEY);
             DadosTemporada dadosTemporada = conversor.obterDados(json, DadosTemporada.class);
-            dadosTemporadaList.add(dadosTemporada);
+            temporadas.add(dadosTemporada);
         }
-        dadosTemporadaList.forEach(System.out::println);
+        temporadas.forEach(System.out::println);
 
-        dadosTemporadaList.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
+        temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
 //      utilizando função Lambda para substituir um 'for'
 
-        List<DadosEpisodio> dadosEpisodios = dadosTemporadaList.stream()
+        List<DadosEpisodio> dadosEpisodios = temporadas.stream()
                 .flatMap(t -> t.episodios().stream())
                 .collect(Collectors.toList());
 //      utilizando .collect(Collectors.toList()) em vez de .toList(), pois o toList() gera uma lista imutável
@@ -52,6 +53,12 @@ public class Principal {
                 .limit(5)
                 .forEach(System.out::println);
 
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream()
+                        .map(d -> new Episodio(t.numeroTemporada(), d))
+                ).collect(Collectors.toList());
+
+        episodios.forEach(System.out::println);
     }
 
 }
