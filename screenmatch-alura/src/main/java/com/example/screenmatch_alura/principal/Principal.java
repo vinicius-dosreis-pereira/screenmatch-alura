@@ -1,13 +1,16 @@
 package com.example.screenmatch_alura.principal;
 
+import com.example.screenmatch_alura.model.DadosEpisodio;
 import com.example.screenmatch_alura.model.DadosSerie;
 import com.example.screenmatch_alura.model.DadosTemporada;
 import com.example.screenmatch_alura.service.ConsumoApi;
 import com.example.screenmatch_alura.service.ConverteDados;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Principal {
 
@@ -37,6 +40,17 @@ public class Principal {
 
         dadosTemporadaList.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
 //      utilizando função Lambda para substituir um 'for'
+
+        List<DadosEpisodio> dadosEpisodios = dadosTemporadaList.stream()
+                .flatMap(t -> t.episodios().stream())
+                .collect(Collectors.toList());
+//      utilizando .collect(Collectors.toList()) em vez de .toList(), pois o toList() gera uma lista imutável
+
+        dadosEpisodios.stream()
+                .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
+                .limit(5)
+                .forEach(System.out::println);
 
     }
 
