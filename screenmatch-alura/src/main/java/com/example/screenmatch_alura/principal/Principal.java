@@ -19,7 +19,7 @@ public class Principal {
     private ConverteDados conversor = new ConverteDados();
 
     private final String ENDERECO = "https://www.omdbapi.com/?t=";
-    private final String API_KEY = "&apikey=7df3ca37";
+    private final String API_KEY = "&apikey=sua-chave";
 
     public void exibeMenu(){
         System.out.println("Digite o nome da série para a busca");
@@ -59,39 +59,36 @@ public class Principal {
 
         episodios.forEach(System.out::println);
 
-//        System.out.println("Digite uma parte do nome de um episodio que você gostaria de pesquisar");
-//        var nomeBusca = leitura.nextLine();
-//
-//        Optional<Episodio> buscaEpisodio = episodios.stream()
-//                .filter(e -> e.getTitulo().toUpperCase().contains(nomeBusca.toUpperCase()))
-//                .findFirst();
-//
-//        buscaEpisodio.ifPresent(System.out::println);
-//        Encontrei o código acima por sugestão da IDE, pesquisar sobre, entender porquê não printa
-//
-//        if(buscaEpisodio.isPresent()){
-//            System.out.println("\nEpisódio encontrado!");
-//            System.out.println("\nTemporada: " + buscaEpisodio.get().getTemporada());
-//            System.out.println("Título: " + buscaEpisodio.get().getTitulo());
-//            System.out.println("Avaliação: " + buscaEpisodio.get().getAvaliacao());
-//        } else {
-//            System.out.println("Episódio não encontrado");
-//        }
+        System.out.println("Digite uma parte do nome de um episodio que você gostaria de pesquisar");
+        var nomeBusca = leitura.nextLine();
 
-//        System.out.println("\nA partir de qual ano você deseja ver os episodios?");
-//        var ano = leitura.nextInt();
-//        leitura.nextLine();
-//
-//        LocalDate dataBusca = LocalDate.of(ano, 1, 1);
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//
-//        episodios.stream()
-//                .filter(e -> e.getDataLancamento() != null && e.getDataLancamento().isAfter(dataBusca))
-//                .forEach(e -> System.out.println(
-//                                "\nTemporada: " + e.getTemporada() +
-//                                "\nEpisodio: " + e.getTitulo() +
-//                                "\nData de lançamento: " + e.getDataLancamento().format(formatter)
-//                ));
+        Optional<Episodio> buscaEpisodio = episodios.stream()
+                .filter(e -> e.getTitulo().toUpperCase().contains(nomeBusca.toUpperCase()))
+                .findFirst();
+
+        if(buscaEpisodio.isPresent()){
+            System.out.println("\nEpisódio encontrado!");
+            System.out.println("\nTemporada: " + buscaEpisodio.get().getTemporada());
+            System.out.println("Título: " + buscaEpisodio.get().getTitulo());
+            System.out.println("Avaliação: " + buscaEpisodio.get().getAvaliacao());
+        } else {
+            System.out.println("Episódio não encontrado");
+        }
+
+        System.out.println("\nA partir de qual ano você deseja ver os episodios?");
+        var ano = leitura.nextInt();
+        leitura.nextLine();
+
+        LocalDate dataBusca = LocalDate.of(ano, 1, 1);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        episodios.stream()
+                .filter(e -> e.getDataLancamento() != null && e.getDataLancamento().isAfter(dataBusca))
+                .forEach(e -> System.out.println(
+                                "\nTemporada: " + e.getTemporada() +
+                                "\nEpisodio: " + e.getTitulo() +
+                                "\nData de lançamento: " + e.getDataLancamento().format(formatter)
+                ));
 
         Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
                 .filter(e -> e.getAvaliacao() > 0.0)
